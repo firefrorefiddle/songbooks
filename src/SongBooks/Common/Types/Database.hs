@@ -2,7 +2,8 @@ module SongBooks.Common.Types.Database where
 
 import Data.Text
 
-type Id = Integer
+type Id  = Integer
+type Idx = Int
 
 data Person = Person { personId        :: Maybe Id
                      , personLastName  :: Text
@@ -20,7 +21,7 @@ data User = User { userId     :: Maybe Id
                  , userPwSalt :: Maybe Text
                  } deriving (Read, Show, Eq)
 
-data InstType = Tex | Sng | Ly | Pdf deriving (Read, Show, Eq)
+data InstType = TeX | Sng | Ly | Pdf deriving (Read, Show, Eq)
 
 data DataType = DataType { dtId :: Maybe Id
                          , dtApplicable :: [InstType]
@@ -57,4 +58,23 @@ data Song = Song { songId :: Maybe Id
                  , songLicense :: Maybe Text
                  , songInsts :: [SongInst]
                  } deriving (Read, Show, Eq)
+
+data Style = TeXStyle { texId :: Maybe Id
+                      , texHeader :: Text } deriving (Read, Show, Eq)
+
+data SBPart = SBPart { sbpTitle :: Maybe Text
+                     , sbpSongs :: [Song]
+                     } deriving (Read, Show, Eq)
+
+data SongBook = SongBook { sbId          :: Maybe Id
+                         , sbName        :: Text
+                         , sbTitle       :: Maybe Text
+                         , sbSubtitle    :: Maybe Text
+                         , sbDescription :: Maybe Text
+                         , sbLicense     :: Maybe Text
+                         , sbCrHolder    :: Maybe Publisher
+                         , sbCrYear      :: Maybe Integer
+                         , sbAuthors     :: [Person]
+                         , sbParts       :: [(Idx, SBPart)]
+                         } deriving (Read, Show, Eq)
 
