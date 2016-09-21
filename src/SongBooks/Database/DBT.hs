@@ -27,12 +27,19 @@ import Database.HDBC (SqlError)
 import qualified Database.HDBC as HDBC
 import qualified Database.HDBC.Sqlite3 as HDBC
 import Control.Monad.Reader
+import Control.Monad.State
 import Control.Monad.Trans.Except
 import Control.Exception
 import SongBooks.Common.Types
+import qualified Data.Map as M
+import Crypto.Hash.MD5
+import qualified Data.ByteString as B
+
+type Hash = B.ByteString
+type StmtMap = M.Map Hash Statement
 
 -- | A monad containing an Sqlite connection and reporting errors
-newtype DBT m r = DBT { getDBT :: ExceptT ErrorMsg (ReaderT Connection m) r } 
+newtype DBT m r = DBT { getDBT :: ExceptT ErrorMsg (StateT StmtMap (ReaderT Connection m)) r } 
      deriving (Applicative, Monad, MonadIO, MonadReader Connection, Functor)
 
 dbErr :: SqlError -> ErrorMsg
@@ -65,7 +72,7 @@ runDBT fp action = do
        case c of 
             Left err -> return . Left $ err
             Right c' -> do
-                  ret <- flip runReaderT c' . runExceptT . getDBT $ action
+                  ret <- flip runReaderT c' . flip evalStateT M.empty . runExceptT . getDBT $ action
                   case ret of
                        Left _ -> liftIO $ HDBC.rollback c'
                        Right res -> res `seq` liftIO $ HDBC.commit c'
