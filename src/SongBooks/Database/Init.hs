@@ -129,20 +129,20 @@ createSongBookInstStmt =
 
 doCreateTables :: (MonadIO m) => DBT m ()
 doCreateTables = do
-  quickQuery createPersonStmt []
-  quickQuery createPublisherStmt []  
-  quickQuery createUserStmt []
-  quickQuery createSongStmt []
-  quickQuery createSongInstStmt []
-  quickQuery createDataTypeStmt []
-  quickQuery createDataTypeApplicStmt []
-  quickQuery createInstDataStmt []  
-  quickQuery createVerseStmt []
-  quickQuery createStyleStmt []
-  quickQuery createStyleDataStmt []
-  quickQuery createSongBookStmt []
-  quickQuery createSongBookAuthorStmt []
-  quickQuery createSongBookPartStmt []
-  quickQuery createSongBookSongsStmt []
-  quickQuery createSongBookInstStmt []
+  run' createPersonStmt
+  run' createPublisherStmt  
+  run' createUserStmt
+  run' createSongStmt
+  run' createSongInstStmt
+  run' createDataTypeStmt
+  run' createDataTypeApplicStmt
+  run' createInstDataStmt  
+  run' createVerseStmt
+  run' createStyleStmt
+  run' createStyleDataStmt
+  run' createSongBookStmt
+  run' createSongBookAuthorStmt
+  run' createSongBookPartStmt
+  run' createSongBookSongsStmt
+  run' createSongBookInstStmt
   return ()
