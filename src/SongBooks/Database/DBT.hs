@@ -12,6 +12,8 @@ module SongBooks.Database.DBT
     , execute
     , executeMany
     , select
+    , selectExact
+    , selectExact'      
     -- re-exports from HDBC      
     , Statement
     , SqlValue
@@ -131,3 +133,17 @@ select :: (MonadIO m) => String -> [SqlValue] -> DBT m ([[SqlValue]])
 select q params = do stmt <- prepare q
                      liftDB $ HDBC.execute stmt params
                      liftDB $ HDBC.fetchAllRows' stmt
+
+selectExact :: (MonadIO m) => String -> [SqlValue] -> DBT m (Maybe [SqlValue])
+selectExact q params = do res <- select q params
+                          case res of
+                            []    -> return Nothing
+                            [row] -> return $ Just row
+                            _     -> throwDB (StringError $ "selectExact: Query returns more than one row.\n" ++ q)
+
+selectExact' :: (MonadIO m) => String -> [SqlValue] -> DBT m [SqlValue]
+selectExact' q params = do res <- select q params
+                           case res of
+                             []    -> throwDB (StringError $ "selectExact': Query returns nothing.\n" ++ q)
+                             [row] -> return row
+                             _     -> throwDB (StringError $ "selectExact': Query returns more than one row.\n" ++ q)

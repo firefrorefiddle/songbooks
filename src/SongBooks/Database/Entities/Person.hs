@@ -9,7 +9,7 @@ module SongBooks.Database.Entities.Person
        , deletePublisher
        ) where
 
-import SongBooks.Common.Types.Internal
+import SongBooks.Common.Types
 import SongBooks.Database.DBT
 
 data Person = Person { personId        :: Maybe Id
@@ -21,20 +21,34 @@ data Publisher = Publisher { publishedId   :: Maybe Id
                            , publisherName :: Text
                            } deriving (Read, Show, Eq)
 
-queryPerson :: (Monad m) => Person -> DBT m [Person]
-queryPerson = undefined
+getPersonById :: (MonadIO m) => Id -> DBT m (Maybe Person)
+getPersonById pid = do
+  names <- selectExact "SELECT last_name, first_name \
+                          \ FROM person \
+                          \ WHERE id = ?" [toSql pid]
+  case names of
+    Nothing -> return Nothing
+    Just [ln, fn] -> return $ Just $ Person (Just pid) (fromSql ln) (Just $ fromSql fn)
+  
+queryPerson :: (MonadIO m) => Maybe Text -> Maybe Text -> DBT m [Person]
+queryPerson qln qfn = undefined -- map toPerson <$> select ("SELECT id, last_name, first_name \
+--                                                \ FROM person" ++ whereLastName qln ++ whereFirstName qfn)
+--   where toPerson pid ln fn = Person (fromSql pid) (fromSql ln) (fromSql fn)
+--        whereLastName Nothing = ""
+--        whereLastName (Just ln) = " WHERE last_name = ?"
+--        whereFirstName = undefined
 
-savePerson :: (Monad m) => Person -> DBT m Bool
+savePerson :: (MonadIO m) => Person -> DBT m Bool
 savePerson = undefined
 
-deletePerson :: (Monad m) => Person -> DBT m Int
+deletePerson :: (MonadIO m) => Person -> DBT m Int
 deletePerson = undefined
 
-queryPublisher :: (Monad m) => Publisher -> DBT m [Publisher]  
+queryPublisher :: (MonadIO m) => Publisher -> DBT m [Publisher]  
 queryPublisher = undefined
 
-savePublisher :: (Monad m) => Publisher -> DBT m Bool
+savePublisher :: (MonadIO m) => Publisher -> DBT m Bool
 savePublisher = undefined
 
-deletePublisher :: (Monad m) => Publisher -> DBT m Int
+deletePublisher :: (MonadIO m) => Publisher -> DBT m Int
 deletePublisher = undefined

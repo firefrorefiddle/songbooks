@@ -7,9 +7,13 @@ module SongBooks.Common.Types (
        FBT,
        FBIO,
        runFBT,
-       -- re-exports from directory-bytestring
+       Id,
+       Idx,
+       -- re-exports
        RawFilePath,
-       FileStatus
+       FileStatus,
+       Text,
+       MonadIO
        ) where
 
 import System.Posix.Files.ByteString
@@ -20,6 +24,7 @@ import Control.Monad.IO.Class
 import Database.HDBC (SqlError)
 import qualified System.IO.Error as E
 import qualified Data.Text as T
+import Data.Text (Text)
 
 type Id  = Integer
 type Idx = Int
