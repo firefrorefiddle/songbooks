@@ -1,19 +1,8 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
-{-| 
-Module      : FutureBack.Common.Types
-Copyright   : (c) Martin Stücklschwaiger, Michael Hartl, 2014
-Maintainer  : mikehartl17@gmail.com
-Stability   : experimental
-Portability : portable
-
-Most of our internal types are defined here.
--}
-
 module SongBooks.Common.Types (
        module System.Posix.Types,
        module Control.Monad.Trans.Except,
-       module SongBooks.Common.Types.Database,       
        FileInfo,
        FileDate,
        FileMeta(..),
@@ -31,7 +20,7 @@ module SongBooks.Common.Types (
        BackupId,
        -- re-exports from directory-bytestring
        RawFilePath,
-       FileStatus,
+       FileStatus
        ) where
 
 import System.Posix.Files.ByteString
@@ -43,7 +32,8 @@ import Database.HDBC (SqlError)
 import qualified System.IO.Error as E
 import qualified Data.Text as T
 
-import SongBooks.Common.Types.Database
+type Id  = Integer
+type Idx = Int
 
 type FileInfo = (RawFilePath, FileStatus)
 
@@ -108,10 +98,6 @@ data Backup = Backup
     , mBackupEndTime    :: Maybe EpochTime
     } deriving (Eq, Show)
 
-{-instance Error ErrorMsg where
-         noMsg = StringError ""
-         strMsg = StringError
--}
 -- | Mainly for testing purposes, a monad which throws 'ErrorMsg's.
 newtype FBT m r = FBT { getFBT :: ExceptT ErrorMsg m r }
      deriving (Applicative, Monad, MonadIO, Functor) -- MonadError ErrorMsg, Functor)
