@@ -13,7 +13,9 @@ module SongBooks.Common.Types (
        RawFilePath,
        FileStatus,
        Text,
-       MonadIO
+       MonadIO,
+       VerseType(..),
+       InstType(..)
        ) where
 
 import System.Posix.Files.ByteString
@@ -45,3 +47,10 @@ type FBIO = FBT IO
 -- | Run an action which may throw 'ErrorMsg's.
 runFBT :: (MonadIO m) => FBT m a -> m (Either ErrorMsg a)
 runFBT action = runExceptT . getFBT $ action
+
+
+
+data VerseType = NormalVerse | Chorus | Bridge
+  deriving (Read, Show, Eq)
+
+data InstType = TeX | Sng | Ly | Pdf deriving (Read, Show, Eq)
